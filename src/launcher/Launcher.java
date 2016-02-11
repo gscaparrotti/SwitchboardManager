@@ -3,13 +3,15 @@ package launcher;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import mainController.MainController;
-import mainController.MainControllerImpl;
+import maincontroller.MainController;
+import maincontroller.MainControllerImpl;
 import model.CallsImpl;
-import serialController.SerialControllerImpl;
+import serialcontroller.SerialControllerImpl;
 import view.ViewImpl;
 
-public class Launcher {
+public final class Launcher {
+    
+    private Launcher() {}
 
     public static void main(String[] args) {
 
@@ -20,7 +22,7 @@ public class Launcher {
 	    System.out.println("Errore nell'impostazione dell'interfaccia grafica.");
 	}
 
-	MainController ctrl = new MainControllerImpl(new CallsImpl(), SerialControllerImpl.class, ViewImpl.class);
+	final MainController ctrl = new MainControllerImpl(new CallsImpl(), SerialControllerImpl.class, ViewImpl.class);
 
 	ctrl.start();
     }

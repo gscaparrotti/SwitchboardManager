@@ -5,14 +5,14 @@ import java.util.Map;
 
 public interface Calls {
 
-    public void addCall(int id, String details);
+    void addCall(int id, String details);
 
-    public Map<Integer, List<String>> getAllCalls();
+    Map<Integer, List<String>> getAllCalls();
 
-    public List<String> getCallsByID(int id);
+    List<String> getCallsByID(int id);
 
-    public void deleteAllCalls();
+    void deleteAllCalls();
 
-    public void deleteCallsByID(int id);
+    void deleteCallsByID(int id);
 
 }

@@ -5,10 +5,10 @@ import java.util.Map;
 
 public interface View {
 
-    public void update(Map<Integer, List<String>> calls);
+    void update(Map<Integer, List<String>> calls);
 
-    public void showMessage(String message);
+    void showMessage(String message);
 
-    public void MakeSBMVisible();
+    void makeSBMVisible();
 
 }

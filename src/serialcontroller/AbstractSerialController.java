@@ -1,6 +1,6 @@
-package serialController;
+package serialcontroller;
 
-import mainController.MainController;
+import maincontroller.MainController;
 
 public abstract class AbstractSerialController implements SerialController {
 
@@ -10,7 +10,7 @@ public abstract class AbstractSerialController implements SerialController {
     private AbstractSerialController() {
     }
 
-    public AbstractSerialController(MainController ctrl) {
+    public AbstractSerialController(final MainController ctrl) {
 	super();
 	this.ctrl = ctrl;
     }

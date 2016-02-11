@@ -17,33 +17,33 @@ public class CallsImpl implements Calls, Serializable {
     }
 
     @Override
-    public synchronized void addCall(int id, String details) {
+    public void addCall(final int id, final String details) {
 	calls.putIfAbsent(id, new LinkedList<String>());
 	calls.get(id).add(details);
     }
 
     @Override
-    public synchronized Map<Integer, List<String>> getAllCalls() {
-	HashMap<Integer, List<String>> temp = new HashMap<>();
-	for (Entry<Integer, List<String>> e : calls.entrySet()) {
+    public Map<Integer, List<String>> getAllCalls() {
+	final HashMap<Integer, List<String>> temp = new HashMap<>();
+	for (final Entry<Integer, List<String>> e : calls.entrySet()) {
 	    temp.put(e.getKey(), new LinkedList<String>(e.getValue()));
 	}
 	return temp;
     }
 
     @Override
-    public synchronized List<String> getCallsByID(int id) {
+    public List<String> getCallsByID(final int id) {
 	return calls.getOrDefault(id, new LinkedList<String>());
     }
 
     @Override
-    public synchronized void deleteAllCalls() {
+    public void deleteAllCalls() {
 	calls = new HashMap<>();
 
     }
 
     @Override
-    public synchronized void deleteCallsByID(int id) {
+    public void deleteCallsByID(final int id) {
 	calls.replace(id, new LinkedList<String>());
     }
 

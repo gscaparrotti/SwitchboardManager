@@ -9,7 +9,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 
-import mainController.MainController;
+import maincontroller.MainController;
+
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -41,29 +42,28 @@ public class ViewImpl extends AbstractView {
 
     private static final String[] PROPS = new String[] { "Interno", "Dettagli Chiamata" };
     private static final Object[][] INIT_DATA = new Object[][] {};
-    private DefaultTableModel tm = new DefaultTableModel(INIT_DATA, PROPS);
-    private boolean oneRoomOnly = false;
-    private JPanel contentPane;
-    private JTable table;
-    private JSpinner spinner;
-    private JCheckBox checkbox;
+    private final DefaultTableModel tm = new DefaultTableModel(INIT_DATA, PROPS);
+    private boolean oneRoomOnly;
+    private final JTable table;
+    private final JSpinner spinner;
+    private final JCheckBox checkbox;
 
     /**
      * Create the frame.
      */
-    public ViewImpl(MainController controller) {
+    public ViewImpl(final MainController controller) {
 	super(controller);
 	this.setIconImage(java.awt.Toolkit.getDefaultToolkit().createImage(ClassLoader.getSystemResource("icon.png")));
 	this.setTitle("SwitchBoard Manager");
 	this.setLocationByPlatform(true);
 	this.setResizable(false);
 	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-	contentPane = new JPanel();
+	final JPanel contentPane = new JPanel();
 	contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 	setContentPane(contentPane);
 	contentPane.setLayout(new BorderLayout(0, 0));
 
-	JPanel panel = new JPanel();
+	final JPanel panel = new JPanel();
 	contentPane.add(panel, BorderLayout.CENTER);
 	panel.setLayout(new BorderLayout(0, 0));
 
@@ -79,10 +79,10 @@ public class ViewImpl extends AbstractView {
 	table.setRowHeight(table.getRowHeight() * 2);
 	table.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) (table.getFont().getSize() * 1.5)));
 
-	JScrollPane scroll = new JScrollPane(table);
+	final JScrollPane scroll = new JScrollPane(table);
 	panel.add(scroll, BorderLayout.CENTER);
 
-	JPanel panel_1 = new JPanel();
+	final JPanel panel_1 = new JPanel();
 	contentPane.add(panel_1, BorderLayout.SOUTH);
 	panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
@@ -99,9 +99,8 @@ public class ViewImpl extends AbstractView {
 	final JButton btnVisualizzaChiamatePer = new JButton("Visualizza interno");
 	panel_1.add(btnVisualizzaChiamatePer);
 	btnVisualizzaChiamatePer.addActionListener(new ActionListener() {
-
 	    @Override
-	    public void actionPerformed(ActionEvent e) {
+	    public void actionPerformed(final ActionEvent e) {
 		oneRoomOnly = true;
 		notifyShowEvent();
 	    }
@@ -110,58 +109,52 @@ public class ViewImpl extends AbstractView {
 	final JButton btnTutteChiamate = new JButton("Visualizza tutto");
 	panel_1.add(btnTutteChiamate);
 	btnTutteChiamate.addActionListener(new ActionListener() {
-
 	    @Override
-	    public void actionPerformed(ActionEvent e) {
+	    public void actionPerformed(final ActionEvent e) {
 		oneRoomOnly = false;
 		notifyShowEvent();
 	    }
 	});
 
-	JButton btnEliminaChiamamteDella = new JButton("Elimina interno");
+	final JButton btnEliminaChiamamteDella = new JButton("Elimina interno");
 	panel_1.add(btnEliminaChiamamteDella);
 	btnEliminaChiamamteDella.addActionListener(new ActionListener() {
-
 	    @Override
-	    public void actionPerformed(ActionEvent e) {
+	    public void actionPerformed(final ActionEvent e) {
 		notifyDeleteEvent((int) spinner.getValue());
 	    }
 	});
 
-	JButton btnEliminaTutteLe = new JButton("Elimina tutto");
+	final JButton btnEliminaTutteLe = new JButton("Elimina tutto");
 	panel_1.add(btnEliminaTutteLe);
 
 	btnEliminaTutteLe.addActionListener(new ActionListener() {
-
 	    @Override
-	    public void actionPerformed(ActionEvent e) {
+	    public void actionPerformed(final ActionEvent e) {
 		notifyDeleteEvent(0);
 	    }
 	});
 
-	JButton stampa = new JButton("Stampa");
+	final JButton stampa = new JButton("Stampa");
 	panel_1.add(stampa);
 
 	stampa.addActionListener(new ActionListener() {
-
 	    @Override
-	    public void actionPerformed(ActionEvent e) {
+	    public void actionPerformed(final ActionEvent e) {
 		printShownCalls();
 	    }
 	});
 
 	checkbox.addActionListener(new ActionListener() {
-
 	    @Override
-	    public void actionPerformed(ActionEvent e) {
+	    public void actionPerformed(final ActionEvent e) {
 		notifyShowEvent();
 	    }
 	});
 	
 	spinner.addChangeListener(new ChangeListener() {
-	    
 	    @Override
-	    public void stateChanged(ChangeEvent e) {
+	    public void stateChanged(final ChangeEvent e) {
 		notifyShowEvent();	
 	    }
 	});
@@ -176,20 +169,22 @@ public class ViewImpl extends AbstractView {
     }
 
     @Override
-    public void showMessage(String message) {
-	JOptionPane pane = new JOptionPane("Informazione: " + message, JOptionPane.PLAIN_MESSAGE);
-	JDialog dialog = pane.createDialog("Messaggio");
+    public void showMessage(final String message) {
+	final JOptionPane pane = new JOptionPane("Informazione: " + message, JOptionPane.PLAIN_MESSAGE);
+	final JDialog dialog = pane.createDialog("Messaggio");
 	dialog.addWindowListener(new WindowAdapter() {
 	    @Override
-	    public void windowOpened(WindowEvent e) {
+	    public void windowOpened(final WindowEvent e) {
 		final ExecutorService ex = Executors.newSingleThreadExecutor();
 		ex.submit(() -> {
 		    try {
-			int iterations = 10;
-			Thread.sleep(1000 * iterations);
+			Thread.sleep(10000);
 			SwingUtilities.invokeLater(() -> dialog.dispose());
 			ex.shutdownNow();
-		    } catch (Exception e1) { }
+		    } catch (Exception e1) { 
+			SwingUtilities.invokeLater(() -> dialog.dispose());
+			ex.shutdownNow();
+		    }
 		});
 	    }
 	});
@@ -200,19 +195,19 @@ public class ViewImpl extends AbstractView {
     }
 
     @Override
-    public void update(Map<Integer, List<String>> calls) {
+    public void update(final Map<Integer, List<String>> calls) {
 	tm.setRowCount(0);
 	if (oneRoomOnly) {
-	    int value = (int) (spinner.getValue());
+	    final int value = (int) (spinner.getValue());
 	    if (calls.containsKey(value)) {
-		for (String s : calls.get(value)) {
+		for (final String s : calls.get(value)) {
 		    tm.addRow(new Object[] { value, s });
 		}
 	    }
 	} else {
-	    for (Integer i : calls.keySet()) {
-		if (!checkbox.isSelected() || (i >= ctrl.getBoundaries()[0] && i <= ctrl.getBoundaries()[1])) {
-		    for (String s : calls.get(i)) {
+	    for (final Integer i : calls.keySet()) {
+		if (!checkbox.isSelected() || i >= ctrl.getBoundaries()[0] && i <= ctrl.getBoundaries()[1]) {
+		    for (final String s : calls.get(i)) {
 			tm.addRow(new Object[] { i, s });
 		    }
 		}
@@ -221,7 +216,7 @@ public class ViewImpl extends AbstractView {
     }
 
     @Override
-    public void MakeSBMVisible() {
+    public void makeSBMVisible() {
 	this.setVisible(true);
     }
 
@@ -229,7 +224,7 @@ public class ViewImpl extends AbstractView {
 	ctrl.showCallsEventFired();
     }
 
-    private void notifyDeleteEvent(int room) {
+    private void notifyDeleteEvent(final int room) {
 	final int n = JOptionPane.showConfirmDialog(this, "Vuoi davvero eliminare le chiamate?", "Elimina Chiamate",
 		JOptionPane.YES_NO_OPTION);
 	if (n == JOptionPane.YES_OPTION) {
