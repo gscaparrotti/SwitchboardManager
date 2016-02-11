@@ -20,11 +20,15 @@ import java.awt.print.PrinterException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.JButton;
 import javax.swing.JSpinner;
 
@@ -173,8 +177,26 @@ public class ViewImpl extends AbstractView {
 
     @Override
     public void showMessage(String message) {
-	JOptionPane.showMessageDialog(this, "Informazione: ".concat(message), "Messaggio",
-		JOptionPane.INFORMATION_MESSAGE);
+	JOptionPane pane = new JOptionPane("Informazione: " + message, JOptionPane.PLAIN_MESSAGE);
+	JDialog dialog = pane.createDialog("Messaggio");
+	dialog.addWindowListener(new WindowAdapter() {
+	    @Override
+	    public void windowOpened(WindowEvent e) {
+		final ExecutorService ex = Executors.newSingleThreadExecutor();
+		ex.submit(() -> {
+		    try {
+			int iterations = 10;
+			Thread.sleep(1000 * iterations);
+			SwingUtilities.invokeLater(() -> dialog.dispose());
+			ex.shutdownNow();
+		    } catch (Exception e1) { }
+		});
+	    }
+	});
+	dialog.setLocationByPlatform(true);
+	dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	dialog.setModal(false);
+	dialog.setVisible(true);
     }
 
     @Override
