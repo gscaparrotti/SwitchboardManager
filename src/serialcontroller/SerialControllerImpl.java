@@ -106,7 +106,8 @@ public class SerialControllerImpl extends AbstractSerialController implements Se
 		ctrl.showMessageOnView(
 			"Errore nella ricezione dei dati della chiamata. \nUna telefonata potrebbe non essere stata registrata.");
 		ctrl.addCall(-2, input);
-		input = "";
+		ctrl.save();
+		started = false;
 	    }
 	}
 
