@@ -9,7 +9,7 @@ import maincontroller.MainController;
 
 public class SerialControllerImpl extends AbstractSerialController implements SerialPortEventListener {
 
-    private static final int PERIODMILLIS = 5000;
+    private static final int PERIODMILLIS = 2000;
     private int lenght = 64;
     private int[] rNum = new int[] {0, 3};
     private String input = "";
@@ -80,12 +80,14 @@ public class SerialControllerImpl extends AbstractSerialController implements Se
     public void serialEvent(final SerialPortEvent arg0) {
 	if (arg0.getEventType() == SerialPortEvent.RXCHAR) {
 	    if (!started) { //NOPMD
+	        input = "";
 		time = new Date();
 		started = true;
 	    } else if (System.currentTimeMillis() - time.getTime() > PERIODMILLIS) {
 		ctrl.addCall(-1, input);
-		input = "";
-		time = new Date();
+		ctrl.save();
+		started = false;
+		//time = new Date();
 	    }
 	    try {
 		final String buf = port.readString();
