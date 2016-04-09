@@ -80,6 +80,12 @@ public class SerialControllerImpl extends AbstractSerialController implements Se
     public void serialEvent(final SerialPortEvent arg0) {
 	if (arg0.getEventType() == SerialPortEvent.RXCHAR) {
 	    if (!started) { //NOPMD
+                try {
+                    port.purgePort(SerialPort.PURGE_RXCLEAR);
+                    port.purgePort(SerialPort.PURGE_TXCLEAR);
+                } catch (SerialPortException e) {
+                    serialPortExceptionHandler(e);
+                }
 	        input = "";
 		time = new Date();
 		started = true;
@@ -95,22 +101,23 @@ public class SerialControllerImpl extends AbstractSerialController implements Se
 		    input = input.concat(buf);
 		}
 		if (input.length() > lenght) {
-		    started = false;
 		    ctrl.addCall(noExceptionsParseInt(input.substring(rNum[0], rNum[1])), input);
 		    ctrl.save();
-		    input = "";
-		    port.purgePort(SerialPort.PURGE_RXCLEAR);
-		    port.purgePort(SerialPort.PURGE_TXCLEAR);
+	            started = false;
 		}
 	    } catch (SerialPortException e) {
-		ctrl.showMessageOnView(
-			"Errore nella ricezione dei dati della chiamata. \nUna telefonata potrebbe non essere stata registrata.");
-		ctrl.addCall(-2, input);
-		ctrl.save();
-		started = false;
+	        serialPortExceptionHandler(e);
 	    }
 	}
 
+    }
+    
+    private void serialPortExceptionHandler(final SerialPortException e) {
+        ctrl.showMessageOnView(
+                "Errore nella ricezione dei dati della chiamata. \nUna telefonata potrebbe non essere stata registrata. \n" + e);
+        ctrl.addCall(-2, input);
+        ctrl.save();
+        started = false;
     }
 
     private int noExceptionsParseInt(final String value) {
