@@ -1,6 +1,10 @@
 package serialcontroller;
 
+import maincontroller.MainController;
+
 public interface SerialController {
+    
+    void onCreate(MainController ctrl);
 
     void setParameters(int roomStart, int roomEnd, int inputLenght) throws IllegalArgumentException;
 

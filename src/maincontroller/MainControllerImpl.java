@@ -9,13 +9,9 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import jssc.SerialPortList;
 import model.Calls;
-import serialcontroller.AbstractSerialController;
 import serialcontroller.SerialController;
-import view.AbstractView;
 import view.View;
 
 public class MainControllerImpl implements MainController {
@@ -32,44 +28,27 @@ public class MainControllerImpl implements MainController {
     private static final int BOUNDARIES_PARAMETERS = 2;
     private static int lowLimit = 201;
     private static int highLimit = 640;
-    private SerialController serial;
+    private final SerialController serialCtrl;
     private Calls calls;
-    private View view;
+    private final View view;
 
-    public MainControllerImpl(final Calls calls, final Class<? extends AbstractSerialController> serial,
-	    final Class<? extends AbstractView> view) {
-	try {
-	    final Constructor<? extends AbstractView> viewConstructor = view.getDeclaredConstructor(MainController.class);
-	    viewConstructor.setAccessible(true);
-	    this.view = viewConstructor.newInstance(this);
-	    this.view.makeSBMVisible();
-	    final Constructor<? extends AbstractSerialController> serialConstructor = serial
-		    .getDeclaredConstructor(MainController.class);
-	    serialConstructor.setAccessible(true);
-	    this.serial = serialConstructor.newInstance(this);
-	    this.calls = calls;
-	} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-		| NoSuchMethodException | SecurityException e) {
-	    if (this.view == null) {
-		System.out.println("Impossibile avviare il programma: " + e.getMessage());
-	    } else {
-		this.view.showMessage("Impossibile avviare il programma: " + e.getMessage());
-	    }
-	    System.exit(1);
-	}
+    public MainControllerImpl(final Calls calls, final SerialController serialCtrl, final View view) {
+	this.calls = calls;
+	this.view = view;
+	this.serialCtrl = serialCtrl;
     }
 
     @Override
     public void start() {
 	final String[] portsList = SerialPortList.getPortNames();
 	if (portsList.length > 0) {
-	    serial.startRS232Port(portsList[0]);
-	    serial.setRS232Configuration(9600, 8, 1, 0);
+	    serialCtrl.startRS232Port(portsList[0]);
+	    serialCtrl.setRS232Configuration(9600, 8, 1, 0);
 	    loadSettingsFromFile();
 	}
 	this.load();
 	view.update(calls.getAllCalls());
-	serial.startListening();
+	serialCtrl.startListening();
     }
 
     @Override
@@ -130,7 +109,7 @@ public class MainControllerImpl implements MainController {
 
     @Override
     public void exit() {
-	serial.stopListening();
+	serialCtrl.stopListening();
 	System.exit(0);
     }
 
@@ -151,10 +130,10 @@ public class MainControllerImpl implements MainController {
 		if (r.ready()) {
 		    final String[] settings = r.readLine().split(",");
 		    if (settings.length >= SETTINGS_PARAMETERS) {
-			serial.setRS232Configuration(Integer.parseUnsignedInt(settings[0]),
+			serialCtrl.setRS232Configuration(Integer.parseUnsignedInt(settings[0]),
 				Integer.parseUnsignedInt(settings[1]), Integer.parseUnsignedInt(settings[2]),
 				Integer.parseUnsignedInt(settings[3]));
-			serial.setParameters(Integer.parseUnsignedInt(settings[4]),
+			serialCtrl.setParameters(Integer.parseUnsignedInt(settings[4]),
 				Integer.parseUnsignedInt(settings[5]), Integer.parseUnsignedInt(settings[6]));
 		    }
 		}

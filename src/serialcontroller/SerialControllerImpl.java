@@ -7,7 +7,7 @@ import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import maincontroller.MainController;
 
-public class SerialControllerImpl extends AbstractSerialController implements SerialPortEventListener {
+public class SerialControllerImpl implements SerialController, SerialPortEventListener {
 
     private static final int PERIODMILLIS = 2000;
     private int lenght = 64;
@@ -16,9 +16,11 @@ public class SerialControllerImpl extends AbstractSerialController implements Se
     private SerialPort port;
     private Date time = new Date();
     private boolean started;
+    private MainController ctrl;
 
-    public SerialControllerImpl(final MainController ctrl) {
-	super(ctrl);
+    @Override
+    public void onCreate(final MainController ctrl) {
+        this.ctrl = ctrl;        
     }
 
     @Override

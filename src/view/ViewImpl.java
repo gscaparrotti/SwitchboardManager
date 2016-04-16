@@ -33,7 +33,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.JButton;
 import javax.swing.JSpinner;
 
-public class ViewImpl extends AbstractView {
+public class ViewImpl extends JFrame implements View {
 
     /**
      * 
@@ -44,15 +44,21 @@ public class ViewImpl extends AbstractView {
     private static final Object[][] INIT_DATA = new Object[][] {};
     private final DefaultTableModel tm = new DefaultTableModel(INIT_DATA, PROPS);
     private boolean oneRoomOnly;
-    private final JTable table;
-    private final JSpinner spinner;
-    private final JCheckBox checkbox;
+    private JTable table;
+    private JSpinner spinner;
+    private JCheckBox checkbox;
+    private MainController ctrl;
+    
+    @Override
+    public void onCreate(final MainController ctrl) {
+	this.ctrl = ctrl;
+	this.buildView();
+    }
 
     /**
      * Create the frame.
      */
-    public ViewImpl(final MainController controller) {
-	super(controller);
+    private void buildView() {
 	this.setIconImage(java.awt.Toolkit.getDefaultToolkit().createImage(ClassLoader.getSystemResource("icon.png")));
 	this.setTitle("SwitchBoard Manager");
 	this.setLocationByPlatform(true);
