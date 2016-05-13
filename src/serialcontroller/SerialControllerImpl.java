@@ -11,7 +11,7 @@ public class SerialControllerImpl implements SerialController, SerialPortEventLi
 
     private static final int PERIODMILLIS = 2000;
     private int lenght = 64;
-    private int[] rNum = new int[] {0, 2};
+    private int[] rNum = new int[] {0, 3};
     private String input = "";
     private SerialPort port;
     private Date time = new Date();
@@ -82,12 +82,6 @@ public class SerialControllerImpl implements SerialController, SerialPortEventLi
     public void serialEvent(final SerialPortEvent arg0) {
 	if (arg0.getEventType() == SerialPortEvent.RXCHAR) {
 	    if (!started) { //NOPMD
-                try {
-                    port.purgePort(SerialPort.PURGE_RXCLEAR);
-                    port.purgePort(SerialPort.PURGE_TXCLEAR);
-                } catch (SerialPortException e) {
-                    serialPortExceptionHandler(e);
-                }
 	        input = "";
 		time = new Date();
 		started = true;
@@ -102,10 +96,17 @@ public class SerialControllerImpl implements SerialController, SerialPortEventLi
 		if (buf != null) {
 		    input = input.concat(buf);
 		}
-		if (input.length() >= lenght) {
+		if (input.length() > lenght) {
+		    System.out.println(input);
 		    ctrl.addCall(noExceptionsParseInt(input.substring(rNum[0], rNum[1])), input);
 		    ctrl.save();
 	            started = false;
+                    try {
+                        port.purgePort(SerialPort.PURGE_RXCLEAR);
+                        port.purgePort(SerialPort.PURGE_TXCLEAR);
+                    } catch (SerialPortException e) {
+                        serialPortExceptionHandler(e);
+                    }
 		}
 	    } catch (SerialPortException e) {
 	        serialPortExceptionHandler(e);
