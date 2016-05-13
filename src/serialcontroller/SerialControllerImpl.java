@@ -11,7 +11,7 @@ public class SerialControllerImpl implements SerialController, SerialPortEventLi
 
     private static final int PERIODMILLIS = 2000;
     private int lenght = 64;
-    private int[] rNum = new int[] {0, 3};
+    private int[] rNum = new int[] {0, 2};
     private String input = "";
     private SerialPort port;
     private Date time = new Date();
