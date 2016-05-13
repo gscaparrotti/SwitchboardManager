@@ -102,7 +102,7 @@ public class SerialControllerImpl implements SerialController, SerialPortEventLi
 		if (buf != null) {
 		    input = input.concat(buf);
 		}
-		if (input.length() > lenght) {
+		if (input.length() >= lenght) {
 		    ctrl.addCall(noExceptionsParseInt(input.substring(rNum[0], rNum[1])), input);
 		    ctrl.save();
 	            started = false;
