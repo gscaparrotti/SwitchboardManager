@@ -10,7 +10,7 @@ import maincontroller.MainController;
 public class SerialControllerImpl implements SerialController, SerialPortEventListener {
 
     private static final int PERIODMILLIS = 2000;
-    private int lenght = 64;
+    private int lenght = 65;
     private int[] rNum = new int[] {0, 3};
     private String input = "";
     private SerialPort port;
@@ -95,7 +95,7 @@ public class SerialControllerImpl implements SerialController, SerialPortEventLi
 		if (buf != null) {
 		    input = input.concat(buf);
 		}
-		if (input.length() > lenght) {
+		if (input.length() >= lenght) {
 		    System.out.println(input);
 		    ctrl.addCall(noExceptionsParseInt(input.substring(rNum[0], rNum[1])), input);
 	            started = false;
