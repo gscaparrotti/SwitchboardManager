@@ -55,6 +55,7 @@ public class MainControllerImpl implements MainController {
     public void addCall(final int room, final String details) {
 	if (calls != null) {
 	    calls.addCall(room, details);
+	    this.save();
 	}
 	if (view != null) {
 	    view.update(calls.getAllCalls());
@@ -70,11 +71,14 @@ public class MainControllerImpl implements MainController {
 
     @Override
     public void deleteCallsEventFired(final int ID) {
-	if (ID == 0) {
-	    calls.deleteAllCalls();
-	} else {
-	    calls.deleteCallsByID(ID);
-	}
+        if (calls != null) {
+            if (ID == 0) {
+                calls.deleteAllCalls();
+            } else {
+                calls.deleteCallsByID(ID);
+            }
+            this.save();
+        }
 	if (view != null) {
 	    view.update(calls.getAllCalls());
 	}

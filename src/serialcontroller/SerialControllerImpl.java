@@ -87,7 +87,6 @@ public class SerialControllerImpl implements SerialController, SerialPortEventLi
 		started = true;
 	    } else if (System.currentTimeMillis() - time.getTime() > PERIODMILLIS) {
 		ctrl.addCall(-1, input);
-		ctrl.save();
 		started = false;
 		//time = new Date();
 	    }
@@ -99,7 +98,6 @@ public class SerialControllerImpl implements SerialController, SerialPortEventLi
 		if (input.length() > lenght) {
 		    System.out.println(input);
 		    ctrl.addCall(noExceptionsParseInt(input.substring(rNum[0], rNum[1])), input);
-		    ctrl.save();
 	            started = false;
                     try {
                         port.purgePort(SerialPort.PURGE_RXCLEAR);
@@ -119,7 +117,6 @@ public class SerialControllerImpl implements SerialController, SerialPortEventLi
         ctrl.showMessageOnView(
                 "Errore nella ricezione dei dati della chiamata. \nUna telefonata potrebbe non essere stata registrata. \n" + e);
         ctrl.addCall(-2, input);
-        ctrl.save();
         started = false;
     }
 
